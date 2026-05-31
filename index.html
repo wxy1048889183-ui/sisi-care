@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💜 守护我的小可爱 · 思思</title>
+<style>
+/* ========== CSS Variables & Reset ========== */
+:root {
+  --bg-deep: #1a0a1e;
+  --bg-mid: #2d1b3d;
+  --bg-card: rgba(45, 27, 61, 0.85);
+  --purple: #9B59B6;
+  --purple-light: #C39BD3;
+  --pink: #FF69B4;
+  --pink-light: #FFB6C1;
+  --pink-warm: #FF85A2;
+  --white: #f5e6f7;
+  --text: #e8d5f0;
+  --text-dim: #b8a0c0;
+  --gold: #FFD700;
+  --danger: #FF6B8A;
+  --success: #6BCB77;
+  --shadow: 0 4px 20px rgba(155, 89, 182, 0.25);
+  --border-glow: 0 0 15px rgba(155, 89, 182, 0.4);
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(155, 89, 182, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 60%, rgba(255, 105, 180, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgba(195, 155, 211, 0.08) 0%, transparent 50%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ========== Floating Background Decorations ========== */
+.bg-decoration {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+  animation: float 6s ease-in-out infinite;
+}
+.bg-decoration:nth-child(1) { top: 5%; left: 5%; font-size: 3rem; animation-delay: 0s; }
+.bg-decoration:nth-child(2) { top: 15%; right: 8%; font-size: 2.5rem; animation-delay: 1.5s; }
+.bg-decoration:nth-child(3) { bottom: 20%; left: 10%; font-size: 2rem; animation-delay: 3s; }
+.bg-decoration:nth-child(4) { bottom: 10%; right: 12%; font-size: 2.8rem; animation-delay: 4.5s; }
+.bg-decoration:nth-child(5) { top: 50%; right: 5%; font-size: 1.8rem; animation-delay: 2s; }
+.bg-decoration:nth-child(6) { top: 40%; left: 3%; font-size: 2.2rem; animation-delay: 5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-15px) rotate(3deg); }
+  50% { transform: translateY(-5px) rotate(-2deg); }
+  75% { transform: translateY(-20px) rotate(1deg); }
+}
+
+/* ========== Header ========== */
+header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 30px 20px 10px;
+}
+.header-crown {
+  display: inline-block;
+  font-size: 2.5rem;
+  animation: crownBounce 2s ease-in-out infinite;
+}
+@keyframes crownBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.header-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #C39BD3, #FF69B4, #FFB6C1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 3px;
+  margin: 5px 0;
+}
+.header-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+/* ========== Main Layout ========== */
+.main-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 15px 20px 30px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+}
+
+/* ========== Card Base ========== */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(155, 89, 182, 0.3);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(155, 89, 182, 0.35);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--purple-light);
+}
+.card-header .icon { font-size: 1.4rem; }
+
+/* ========== Calendar Section ========== */
+.calendar-section { display: flex; flex-direction: column; gap: 16px; }
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.calendar-nav button {
+  background: rgba(155, 89, 182, 0.3);
+  border: 1px solid rgba(155, 89, 182, 0.5);
+  color: var(--text);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center;
+}
+.calendar-nav button:hover {
+  background: var(--purple);
+  box-shadow: var(--border-glow);
+}
+.calendar-month-label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--pink-light);
+  letter-spacing: 1px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+.calendar-day-header {
+  font-size: 0.78rem;
+  color: var(--pink);
+  font-weight: 600;
+  padding: 6px 0;
+}
+.calendar-day-header.weekend { color: var(--pink-warm); }
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.9rem;
+  position: relative;
+  transition: all 0.2s;
+  color: var(--text);
+  min-width: 38px;
+}
+.calendar-day:hover {
+  background: rgba(155, 89, 182, 0.35);
+  transform: scale(1.08);
+}
+.calendar-day.other-month { color: var(--text-dim); opacity: 0.4; cursor: default; }
+.calendar-day.today {
+  border: 2px solid var(--pink);
+  font-weight: 700;
+  color: var(--pink-light);
+  box-shadow: 0 0 12px rgba(255, 105, 180, 0.3);
+}
+.calendar-day.period-day {
+  background: rgba(255, 107, 138, 0.35) !important;
+  color: #FFB6C1 !important;
+  font-weight: 700;
+  position: relative;
+}
+.calendar-day.period-day::after {
+  content: '🌸';
+  position: absolute;
+  bottom: -2px;
+  font-size: 0.55rem;
+}
+.calendar-day.predicted-period {
+  border: 1.5px dashed var(--pink-warm);
+  color: var(--pink-warm);
+}
+.calendar-day.predicted-period::after {
+  content: '💧';
+  position: absolute;
+  bottom: -2px;
+  font-size: 0.5rem;
+  opacity: 0.7;
+}
+
+.legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  padding: 5px 0;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.legend-dot.period { background: rgba(255, 107, 138, 0.5); }
+.legend-dot.predicted { border: 2px dashed var(--pink-warm); background: transparent; }
+
+.cycle-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #9B59B6, #C39BD3);
+  color: white;
+  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+}
+.btn-primary:hover {
+  box-shadow: 0 6px 25px rgba(155, 89, 182, 0.6);
+  transform: translateY(-2px);
+}
+.btn-secondary {
+  background: rgba(255, 107, 138, 0.3);
+  border: 1px solid rgba(255, 107, 138, 0.5);
+  color: var(--pink-light);
+}
+.btn-secondary:hover {
+  background: rgba(255, 107, 138, 0.5);
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(155, 89, 182, 0.6);
+  color: var(--purple-light);
+}
+.btn-outline:hover {
+  background: rgba(155, 89, 182, 0.25);
+}
+
+/* ========== Right Panel Cards ========== */
+.right-panel { display: flex; flex-direction: column; gap: 16px; }
+
+.quote-card { position: relative; overflow: hidden; }
+.quote-card::before {
+  content: '"';
+  position: absolute;
+  top: -20px; right: 15px;
+  font-size: 6rem;
+  color: rgba(155, 89, 182, 0.15);
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+.quote-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+  padding: 5px 0;
+}
+.quote-text::before { content: '💬 '; }
+.quote-author {
+  text-align: right;
+  color: var(--pink);
+  font-size: 0.85rem;
+  margin-top: 8px;
+  font-weight: 600;
+}
+.quote-refresh {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.quote-refresh:hover { color: var(--pink); }
+
+.weather-card .weather-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.weather-icon { font-size: 3rem; }
+.weather-temp { font-size: 2.5rem; font-weight: 700; color: var(--pink-light); }
+.weather-desc { color: var(--text-dim); font-size: 0.9rem; }
+.weather-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.weather-detail span { color: var(--text); font-weight: 600; }
+
+.advice-box {
+  margin-top: 12px;
+  padding: 12px 15px;
+  background: rgba(155, 89, 182, 0.15);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--pink);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+.advice-box .advice-label {
+  font-weight: 700;
+  color: var(--pink-warm);
+  margin-bottom: 3px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.stat-item {
+  text-align: center;
+  padding: 12px 8px;
+  background: rgba(155, 89, 182, 0.12);
+  border-radius: var(--radius-sm);
+}
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--pink-light);
+}
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+.night-shift-card {
+  background: linear-gradient(135deg, rgba(45, 27, 61, 0.9), rgba(75, 35, 95, 0.85));
+  border-color: rgba(255, 215, 0, 0.3);
+}
+.night-shift-tips {
+  list-style: none;
+  padding: 0;
+}
+.night-shift-tips li {
+  padding: 6px 0 6px 25px;
+  position: relative;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.night-shift-tips li::before {
+  content: '🌙';
+  position: absolute;
+  left: 0;
+  font-size: 0.75rem;
+}
+
+/* ========== Toast ========== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--purple);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  z-index: 1000;
+  box-shadow: var(--border-glow);
+  animation: toastIn 0.4s ease-out, toastOut 0.4s ease-in 2s forwards;
+  pointer-events: none;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    padding: 10px 15px 20px;
+  }
+  .header-title { font-size: 1.6rem; }
+  .calendar-day { font-size: 0.78rem; min-width: 30px; }
+  .weather-temp { font-size: 2rem; }
+}
+
+@media (max-width: 400px) {
+  .header-title { font-size: 1.3rem; letter-spacing: 1px; }
+  .card { padding: 15px; }
+  .calendar-grid { gap: 2px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Floating bg decorations -->
+<div class="bg-decoration">💜</div>
+<div class="bg-decoration">🎀</div>
+<div class="bg-decoration">⭐</div>
+<div class="bg-decoration">🌙</div>
+<div class="bg-decoration">🌸</div>
+<div class="bg-decoration">🦇</div>
+
+<!-- Header -->
+<header>
+  <div class="header-crown">👑</div>
+  <h1 class="header-title">守护我的小可爱 · 思思</h1>
+  <p class="header-subtitle">── 每一天都值得被温柔以待 ──</p>
+</header>
+
+<!-- Main Content -->
+<div class="main-container">
+
+  <!-- Left: Calendar -->
+  <div class="calendar-section">
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📅</span> 生理日历
+      </div>
+      <div class="calendar-nav">
+        <button onclick="changeMonth(-1)" title="上个月">◀</button>
+        <span class="calendar-month-label" id="monthLabel"></span>
+        <button onclick="changeMonth(1)" title="下个月">▶</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="legend" style="margin-top:12px;">
+        <div class="legend-item"><span class="legend-dot period"></span> 经期日</div>
+        <div class="legend-item"><span class="legend-dot predicted"></span> 预测经期</div>
+        <div class="legend-item">🌸 点击日期标记/取消</div>
+      </div>
+    </div>
+
+    <div class="cycle-actions">
+      <button class="btn btn-primary" onclick="markPeriodToday()">🌸 标记今天为经期</button>
+      <button class="btn btn-secondary" onclick="clearPeriodToday()">✕ 取消今天的标记</button>
+      <button class="btn btn-outline" onclick="clearAllPeriods()">🗑 清除所有记录</button>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
+    <!-- Quote Card -->
+    <div class="card quote-card">
+      <div class="card-header">
+        <span class="icon">💬</span> 今日暖心话
+      </div>
+      <div class="quote-text" id="quoteText"></div>
+      <div class="quote-author" id="quoteAuthor"></div>
+      <span class="quote-refresh" onclick="refreshQuote()">🔄 换一句</span>
+    </div>
+
+    <!-- Weather Card -->
+    <div class="card weather-card">
+      <div class="card-header">
+        <span class="icon">🌤️</span> 今日天气 · 东阳
+      </div>
+      <div id="weatherContent">
+        <div style="text-align:center; padding:20px; color:var(--text-dim);">
+          正在获取天气数据...
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Card -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📊</span> 生理周期统计
+      </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-item">
+          <div class="stat-value" id="statCycle">--</div>
+          <div class="stat-label">平均周期（天）</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statDuration">--</div>
+          <div class="stat-label">平均经期（天）</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statNext">--</div>
+          <div class="stat-label">预计下次经期</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statStatus">--</div>
+          <div class="stat-label">当前状态</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Night Shift Care Card -->
+    <div class="card night-shift-card">
+      <div class="card-header">
+        <span class="icon">🌙</span> 夜班小贴士
+      </div>
+      <ul class="night-shift-tips">
+        <li>下班后记得温水泡脚，促进血液循环</li>
+        <li>睡前喝杯温牛奶或蜂蜜水，助眠安神</li>
+        <li>白天睡觉拉好遮光窗帘，模拟夜间环境</li>
+        <li>补充维生素D和钙质，弥补日照不足</li>
+        <li>生理期夜班多备暖宝宝和红糖姜茶</li>
+        <li>你辛苦了，记得对自己好一点 💜</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+// ==================== DATA ====================
+
+// Encouraging quotes
+const quotes = [
+  { text: '你今天的样子，就是最好的样子。不需要成为别人，你本身就是独一无二的光。', author: '写给你的话' },
+  { text: '累了就歇一歇，你已经做得很棒了。世界很大，但你永远是自己的小太阳。', author: '写给你的话' },
+  { text: '每一个女孩都是一朵花，有的开在春天，有的开在冬天。你的花期，由你自己决定。', author: '写给你的话' },
+  { text: '温柔不是软弱，善良不是好欺负。你柔软的内心，恰恰是你最强大的力量。', author: '写给你的话' },
+  { text: '不要因为走得太远而忘记为什么出发，也不要因为别人的脚步乱了自己的节奏。', author: '写给你的话' },
+  { text: '你值得这世上所有的美好。不是因为完美，而是因为真实。', author: '写给你的话' },
+  { text: '生活有时会很累，但请记得，总有人在默默地爱着你、支持着你。', author: '写给你的话' },
+  { text: '今天的努力，是为了明天可以更从容地做自己。加油，小可爱！', author: '写给你的话' },
+  { text: '别怕犯错，别怕失败。每一次跌倒，都是为下一次奔跑积蓄力量。', author: '写给你的话' },
+  { text: '你的笑容，是这个世界上最美的风景。多笑一笑，世界也会对你微笑。', author: '写给你的话' },
+  { text: '照顾别人之前，请先照顾好自己。你也很重要，非常非常重要。', author: '写给你的话' },
+  { text: '不必太在意别人的眼光，你的人生剧本，只有你自己能写。', author: '写给你的话' },
+  { text: '生理期的不适会过去，就像暴风雨后的彩虹。记得多喝热水，抱抱自己。', author: '写给你的话' },
+  { text: '你是被深爱着的，无论今天过得怎样，都别忘了这一点。', author: '写给你的话' },
+  { text: '每天都给自己一个小奖励吧，哪怕只是一杯奶茶、一首好听的歌。', author: '写给你的话' },
+  { text: '你的存在本身，就是一份礼物。感谢你来到这个世界。', author: '写给你的话' },
+  { text: '不管外面的世界多么喧嚣，你的内心都可以拥有一片宁静的花园。', author: '写给你的话' },
+  { text: '慢慢来，比较快。不要太着急，一切都会在合适的时候到来。', author: '写给你的话' },
+  { text: '你要相信，你比你自己以为的更坚强、更勇敢、更美丽。', author: '写给你的话' },
+  { text: '夜班辛苦了，但你看过的那些星光和日出，是朝九晚五的人永远看不到的风景。', author: '写给你的话' },
+  { text: '生活是一面镜子，你对它笑，它就对你笑。今天也请给自己一个大大的微笑吧！', author: '写给你的话' },
+  { text: '爱自己，是终身浪漫的开始。从今天起，对自己温柔一点。', author: '写给你的话' },
+  { text: '你不需要成为某个人的公主，你本来就是自己的女王。', author: '写给你的话' },
+  { text: '好的事情总会到来，当它来晚的时候，也不失为一种惊喜。', author: '写给你的话' },
+  { text: '做自己喜欢的事，爱自己喜欢的人，过自己喜欢的生活。你值得！', author: '写给你的话' },
+  { text: '不管今天有多糟糕，明天的太阳都会照常升起。而你，也会重新出发。', author: '写给你的话' },
+  { text: '难过的时候，就想想那些让你开心的小事。快乐其实很简单。', author: '写给你的话' },
+  { text: '你是宇宙中独一无二的星，闪耀着自己的光芒，谁也替代不了。', author: '写给你的话' },
+  { text: '所有的不开心都会过去，所有的美好都在路上。', author: '写给你的话' },
+  { text: '记住了，你不仅是某某的女朋友，你首先是你自己。好好爱自己。', author: '写给你的话' },
+];
+
+// Weather code -> description + icon + advice
+const weatherMap = {
+  0: { desc: '晴天', icon: '☀️', advice: '阳光正好！适合出门散步，晒晒太阳补充维生素D（夜班更需要哦）。记得涂防晒~' },
+  1: { desc: '大部晴朗', icon: '🌤️', advice: '天气不错！适合出去走走，呼吸新鲜空气。不妨逛逛公园或者去咖啡店坐坐。' },
+  2: { desc: '多云', icon: '⛅', advice: '多云天气，不冷不热刚刚好。适合出门逛街或约朋友小聚，记得带件薄外套。' },
+  3: { desc: '阴天', icon: '☁️', advice: '阴天容易犯困。出门的话带把伞以防万一，在家窝着追剧也是不错的选择~' },
+  45: { desc: '雾', icon: '🌫️', advice: '有雾，能见度较低。开车或骑车的宝宝注意安全，最好减少户外活动。' },
+  48: { desc: '雾凇', icon: '🌫️', advice: '有雾，出行注意安全，穿暖和一点。夜班下班回家路上尤其小心。' },
+  51: { desc: '小毛毛雨', icon: '🌦️', advice: '下小雨啦~出门记得带伞哦！小雨漫步也有小浪漫，但别淋湿着凉了。' },
+  53: { desc: '毛毛雨', icon: '🌦️', advice: '雨丝绵绵，出门一定带伞！穿防水鞋子，别让脚受凉。生理期的话更要注意保暖。' },
+  55: { desc: '大毛毛雨', icon: '🌧️', advice: '雨有点大，尽量少出门吧。在家泡杯热茶、看看书，享受安静的室内时光~' },
+  61: { desc: '小雨', icon: '🌧️', advice: '下雨天，出门记得带伞穿雨鞋。天气转凉，多穿一件，尤其保护好小腹别受凉。' },
+  63: { desc: '中雨', icon: '🌧️', advice: '雨势不小，建议减少外出。如果必须出门，带好雨具，注意路面湿滑。' },
+  65: { desc: '大雨', icon: '⛈️', advice: '大雨天尽量别出门啦！在家休息是最好的选择。点个外卖，泡杯姜茶，好好犒劳自己。' },
+  71: { desc: '小雪', icon: '🌨️', advice: '下小雪了，浪漫但要保暖！出门裹紧羽绒服，围巾手套都安排上，路滑小心。' },
+  73: { desc: '中雪', icon: '🌨️', advice: '雪不小呢，穿厚实再出门！防滑最重要，夜班回家路上尤其注意安全。' },
+  75: { desc: '大雪', icon: '❄️', advice: '大雪天气，能不出门就别出门啦！在家暖暖的，泡杯热可可，享受雪景就好。' },
+  77: { desc: '雪粒', icon: '🌨️', advice: '有小雪粒，出门注意防滑保暖。手套帽子都戴好，别冻着了。' },
+  80: { desc: '阵雨', icon: '🌦️', advice: '阵雨说来就来，出门务必带伞！雨后空气清新，可以短暂出门走走。' },
+  81: { desc: '中阵雨', icon: '🌧️', advice: '阵雨较大，尽量减少外出。在家做做瑜伽或拉伸，对身体有好处~' },
+  82: { desc: '大阵雨', icon: '⛈️', advice: '大阵雨来势汹汹，乖乖待在家里吧。注意关好门窗，照顾好自己。' },
+  85: { desc: '小阵雪', icon: '🌨️', advice: '阵雪飘飘，出门注意保暖防滑。雪天路滑，走路慢一点。' },
+  86: { desc: '大阵雪', icon: '❄️', advice: '大雪纷飞，尽量别出门了。在家暖暖地待着，看雪景也很美。' },
+  95: { desc: '雷暴', icon: '⛈️', advice: '雷暴天气！千万别出门，远离窗户和电器。安全第一，好好待在家里。' },
+  96: { desc: '雷暴+冰雹', icon: '⛈️', advice: '雷暴冰雹，非常危险！绝对不要出门，在家安全待着。注意保暖别着凉。' },
+  99: { desc: '强雷暴+冰雹', icon: '⛈️', advice: '强雷暴来袭！千万别出门，一定注意安全。在家好好休息，安全最重要！' },
+};
+
+// ==================== STATE ====================
+let currentYear, currentMonth;
+let periodDates = new Set(); // 'YYYY-MM-DD' strings
+
+// ==================== LOCAL STORAGE ====================
+function loadPeriodData() {
+  try {
+    const data = localStorage.getItem('kuromi_period_dates');
+    if (data) {
+      periodDates = new Set(JSON.parse(data));
+    }
+  } catch(e) {
+    periodDates = new Set();
+  }
+}
+
+function savePeriodData() {
+  try {
+    localStorage.setItem('kuromi_period_dates', JSON.stringify([...periodDates]));
+  } catch(e) {}
+}
+
+// ==================== TOAST ====================
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  toast.style.animation = 'none';
+  toast.offsetHeight;
+  toast.style.animation = 'toastIn 0.4s ease-out, toastOut 0.4s ease-in 2s forwards';
+  setTimeout(() => { toast.style.display = 'none'; }, 2400);
+}
+
+// ==================== DATE HELPERS ====================
+function formatDate(y, m, d) {
+  return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+
+function daysInMonth(y, m) {
+  return new Date(y, m + 1, 0).getDate();
+}
+
+function firstDayOfMonth(y, m) {
+  return new Date(y, m, 1).getDay();
+}
+
+function dateToKey(date) {
+  return formatDate(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+// ==================== PERIOD ANALYSIS ====================
+function getPeriodGroups() {
+  const sorted = [...periodDates].sort();
+  if (sorted.length === 0) return [];
+  const groups = [];
+  let group = [sorted[0]];
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = new Date(sorted[i - 1]);
+    const curr = new Date(sorted[i]);
+    const diffDays = (curr - prev) / (1000 * 60 * 60 * 24);
+    if (diffDays <= 2) {
+      group.push(sorted[i]);
+    } else {
+      groups.push(group);
+      group = [sorted[i]];
+    }
+  }
+  groups.push(group);
+  return groups;
+}
+
+function calculateStats() {
+  const groups = getPeriodGroups();
+  if (groups.length === 0) return { avgCycle: null, avgDuration: null, nextPredicted: null, nextEnd: null };
+
+  const durations = groups.map(g => g.length);
+  const avgDuration = Math.round(durations.reduce((a, b) => a + b, 0) / durations.length);
+
+  const cycles = [];
+  for (let i = 1; i < groups.length; i++) {
+    const prevStart = new Date(groups[i - 1][0]);
+    const currStart = new Date(groups[i][0]);
+    cycles.push(Math.round((currStart - prevStart) / (1000 * 60 * 60 * 24)));
+  }
+  const avgCycle = cycles.length > 0 ? Math.round(cycles.reduce((a, b) => a + b, 0) / cycles.length) : 28;
+
+  const lastGroup = groups[groups.length - 1];
+  const lastStart = new Date(lastGroup[0]);
+  const nextStart = new Date(lastStart);
+  nextStart.setDate(nextStart.getDate() + avgCycle);
+  const nextEnd = new Date(nextStart);
+  nextEnd.setDate(nextEnd.getDate() + avgDuration - 1);
+
+  return {
+    avgCycle,
+    avgDuration,
+    nextPredicted: dateToKey(nextStart),
+    nextEnd: dateToKey(nextEnd),
+    lastGroup: lastGroup,
+  };
+}
+
+function getCurrentStatus() {
+  const today = dateToKey(new Date());
+  if (periodDates.has(today)) {
+    const sorted = [...periodDates].sort();
+    const groups = getPeriodGroups();
+    for (const g of groups) {
+      if (g.includes(today)) {
+        const idx = g.indexOf(today);
+        return `经期第 ${idx + 1} 天`;
+      }
+    }
+    return '经期中';
+  }
+
+  const stats = calculateStats();
+  if (stats.nextPredicted) {
+    const nextDate = new Date(stats.nextPredicted);
+    const todayDate = new Date();
+    const diff = Math.round((nextDate - todayDate) / (1000 * 60 * 60 * 24));
+    if (diff <= 7 && diff > 0) return `距下次约 ${diff} 天`;
+    if (diff <= 0 && stats.nextEnd >= today) return '预计经期中';
+    return '安全期';
+  }
+  return '暂无数据';
+}
+
+// ==================== CALENDAR RENDER ====================
+function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  const label = document.getElementById('monthLabel');
+
+  const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+  label.textContent = `${currentYear}年 ${months[currentMonth]}`;
+
+  const dayHeaders = ['日', '一', '二', '三', '四', '五', '六'];
+  let html = '';
+  dayHeaders.forEach((d, i) => {
+    const cls = (i === 0 || i === 6) ? ' weekend' : '';
+    html += `<div class="calendar-day-header${cls}">${d}</div>`;
+  });
+
+  const daysInM = daysInMonth(currentYear, currentMonth);
+  const firstDay = firstDayOfMonth(currentYear, currentMonth);
+  const prevMonthDays = daysInMonth(currentYear, currentMonth - 1 < 0 ? 11 : currentMonth - 1);
+
+  const todayKey = dateToKey(new Date());
+  const stats = calculateStats();
+
+  // Previous month days
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const d = prevMonthDays - i;
+    html += `<div class="calendar-day other-month">${d}</div>`;
+  }
+
+  // Current month days
+  for (let d = 1; d <= daysInM; d++) {
+    const key = formatDate(currentYear, currentMonth, d);
+    let cls = 'calendar-day';
+    if (key === todayKey) cls += ' today';
+    if (periodDates.has(key)) cls += ' period-day';
+
+    // Predicted period
+    if (stats.nextPredicted && stats.nextEnd) {
+      if (key >= stats.nextPredicted && key <= stats.nextEnd && !periodDates.has(key)) {
+        cls += ' predicted-period';
+      }
+    }
+
+    html += `<div class="${cls}" data-date="${key}" onclick="togglePeriodDate('${key}', this)">${d}</div>`;
+  }
+
+  // Next month days
+  const totalCells = firstDay + daysInM;
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let d = 1; d <= remaining; d++) {
+    html += `<div class="calendar-day other-month">${d}</div>`;
+  }
+
+  grid.innerHTML = html;
+  updateStats();
+}
+
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  renderCalendar();
+}
+
+function togglePeriodDate(key, el) {
+  if (el && el.classList.contains('other-month')) return;
+  if (periodDates.has(key)) {
+    periodDates.delete(key);
+    showToast('🌸 已取消经期标记');
+  } else {
+    periodDates.add(key);
+    showToast('🌸 已标记为经期日');
+  }
+  savePeriodData();
+  renderCalendar();
+}
+
+function markPeriodToday() {
+  const key = dateToKey(new Date());
+  periodDates.add(key);
+  savePeriodData();
+  showToast('🌸 今天已标记为经期日，照顾好自己哦~');
+  renderCalendar();
+}
+
+function clearPeriodToday() {
+  const key = dateToKey(new Date());
+  if (periodDates.has(key)) {
+    periodDates.delete(key);
+    savePeriodData();
+    showToast('已取消今天的经期标记');
+  } else {
+    showToast('今天没有经期标记哦~');
+  }
+  renderCalendar();
+}
+
+function clearAllPeriods() {
+  if (confirm('确定要清除所有经期记录吗？这个操作不可恢复哦。')) {
+    periodDates.clear();
+    savePeriodData();
+    renderCalendar();
+    showToast('🗑 所有经期记录已清除');
+  }
+}
+
+function updateStats() {
+  const stats = calculateStats();
+  document.getElementById('statCycle').textContent = stats.avgCycle || '--';
+  document.getElementById('statDuration').textContent = stats.avgDuration || '--';
+  if (stats.nextPredicted) {
+    const d = new Date(stats.nextPredicted);
+    document.getElementById('statNext').textContent = `${d.getMonth() + 1}/${d.getDate()}`;
+  } else {
+    document.getElementById('statNext').textContent = '--';
+  }
+  document.getElementById('statStatus').textContent = getCurrentStatus();
+}
+
+// ==================== QUOTES ====================
+function getDailyQuote() {
+  const today = new Date();
+  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+  return quotes[dayOfYear % quotes.length];
+}
+
+function renderQuote() {
+  const q = getDailyQuote();
+  document.getElementById('quoteText').textContent = q.text;
+  document.getElementById('quoteAuthor').textContent = '── ' + q.author;
+}
+
+function refreshQuote() {
+  const randomIdx = Math.floor(Math.random() * quotes.length);
+  const q = quotes[randomIdx];
+  document.getElementById('quoteText').textContent = q.text;
+  document.getElementById('quoteAuthor').textContent = '── ' + q.author;
+  showToast('💬 已为你换一句暖心话~');
+}
+
+// ==================== WEATHER ====================
+async function fetchWeather() {
+  const lat = 29.29;
+  const lon = 120.23;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia/Shanghai&forecast_days=1`;
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('API error');
+    const data = await resp.json();
+
+    const current = data.current;
+    const daily = data.daily;
+    const code = current.weather_code;
+    const w = weatherMap[code] || { desc: '未知', icon: '🌈', advice: '今天也要元气满满哦！不管什么天气，心情好就是好天气~' };
+
+    const temp = Math.round(current.temperature_2m);
+    const feelsLike = Math.round(current.apparent_temperature);
+    const humidity = current.relative_humidity_2m;
+    const windSpeed = current.wind_speed_10m;
+    const maxTemp = daily ? Math.round(daily.temperature_2m_max[0]) : null;
+    const minTemp = daily ? Math.round(daily.temperature_2m_min[0]) : null;
+    const precipProb = daily && daily.precipitation_probability_max ? daily.precipitation_probability_max[0] : null;
+
+    document.getElementById('weatherContent').innerHTML = `
+      <div class="weather-main">
+        <span class="weather-icon">${w.icon}</span>
+        <div>
+          <div class="weather-temp">${temp}°C</div>
+          <div class="weather-desc">${w.desc} · 体感 ${feelsLike}°C</div>
+        </div>
+      </div>
+      <div class="weather-detail">
+        <div>💧 湿度：<span>${humidity}%</span></div>
+        <div>💨 风速：<span>${windSpeed} km/h</span></div>
+        ${maxTemp !== null ? `<div>🔺 最高：<span>${maxTemp}°C</span></div>` : ''}
+        ${minTemp !== null ? `<div>🔻 最低：<span>${minTemp}°C</span></div>` : ''}
+        ${precipProb !== null ? `<div>🌧 降雨概率：<span>${precipProb}%</span></div>` : ''}
+      </div>
+      <div class="advice-box">
+        <div class="advice-label">💡 出行建议</div>
+        ${w.advice}
+        ${temp < 10 ? '<br>⚠️ 天气较冷，出门穿暖和点，尤其注意腹部保暖！' : ''}
+        ${temp > 30 ? '<br>⚠️ 天气炎热，注意防暑防晒，多喝水哦！' : ''}
+        ${precipProb && precipProb > 50 ? '<br>⚠️ 降雨概率较高，记得带伞！' : ''}
+      </div>
+      <div style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;text-align:right;">数据更新时间：${new Date(current.time).toLocaleTimeString('zh-CN')}</div>
+    `;
+  } catch (e) {
+    document.getElementById('weatherContent').innerHTML = `
+      <div style="text-align:center;padding:15px;color:var(--text-dim);">
+        <p>😢 天气数据暂时获取失败</p>
+        <p style="font-size:0.8rem;">请检查网络连接后刷新页面重试</p>
+        <button class="btn btn-outline" style="margin-top:10px;font-size:0.75rem;" onclick="fetchWeather()">🔄 重新获取</button>
+      </div>
+    `;
+  }
+}
+
+// ==================== INIT ====================
+function init() {
+  const now = new Date();
+  currentYear = now.getFullYear();
+  currentMonth = now.getMonth();
+
+  loadPeriodData();
+  renderCalendar();
+  renderQuote();
+  fetchWeather();
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
